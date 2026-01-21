@@ -10,10 +10,17 @@ import usersFromServer from './api/users';
 import todosFromServer from './api/todos';
 
 function getTodosWithUser(todos: Todo[], users: User[]): ToDoWithUser[] {
-  return todos.map(todo => ({
-    ...todo,
-    user: users.find(user => user.id === todo.userId),
-  }));
+  const result: ToDoWithUser[] = [];
+
+  for (const todo of todos) {
+    const user = users.find(u => u.id === todo.userId);
+
+    if (user) {
+      result.push({ ...todo, user });
+    }
+  }
+
+  return result;
 }
 
 export const App: React.FC = () => {

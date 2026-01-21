@@ -4,22 +4,22 @@ import { useState } from 'react';
 import { TodoList } from './components/TodoList';
 import { User } from './Types/User';
 import { Todo } from './Types/Todo';
+import { ToDoWithUser } from './Types/ToDoWithUser';
 
 import usersFromServer from './api/users';
 import todosFromServer from './api/todos';
 
-function getTodosWithUser(todos: Todo[], users: User[]): Todo[] {
+function getTodosWithUser(todos: Todo[], users: User[]): ToDoWithUser[] {
   return todos.map(todo => ({
     ...todo,
-
-    user: users.find(user => user.id === todo.userId)!,
+    user: users.find(user => user.id === todo.userId),
   }));
 }
 
 export const App: React.FC = () => {
   const preparedTodos = getTodosWithUser(todosFromServer, usersFromServer);
 
-  const [todos, setTodos] = useState<Todo[]>(preparedTodos);
+  const [todos, setTodos] = useState<ToDoWithUser[]>(preparedTodos);
   const [title, setTitle] = useState('');
   const [selectedUserId, setSelectedUserId] = useState(0);
   const [titleError, setTitleError] = useState(false);
@@ -48,7 +48,7 @@ export const App: React.FC = () => {
 
     const newId = Math.max(...todos.map(todo => todo.id), 0) + 1;
 
-    const newTodo: Todo = {
+    const newTodo: ToDoWithUser = {
       id: newId,
       title: title.trim(),
       completed: false,
@@ -65,7 +65,7 @@ export const App: React.FC = () => {
     <div className="App">
       <h1>Add todo form</h1>
 
-      <form action="/api/todos" method="POST" onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}>
         <div className="field">
           <input
             value={title}
